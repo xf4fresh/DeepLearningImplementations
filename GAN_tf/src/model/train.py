@@ -4,6 +4,7 @@ import models
 import numpy as np
 import tensorflow as tf
 from tqdm import tqdm
+
 sys.path.append("../utils")
 import visualization_utils as vu
 import training_utils as tu
@@ -14,7 +15,6 @@ FLAGS = tf.app.flags.FLAGS
 
 
 def train_model():
-
     # Setup session
     sess = tu.setup_session()
 

@@ -2,12 +2,12 @@ import tensorflow as tf
 import random
 import numpy as np
 import sys
+
 sys.path.append("../utils")
 import logging_utils as lu
 
 
 def setup_session():
-
     lu.print_session()
 
     FLAGS = tf.app.flags.FLAGS
@@ -28,7 +28,6 @@ def setup_session():
     # Initialize all RNGs with a deterministic seed
     with sess.graph.as_default():
         tf.set_random_seed(FLAGS.random_seed)
-
     random.seed(FLAGS.random_seed)
     np.random.seed(FLAGS.random_seed)
 
@@ -36,7 +35,6 @@ def setup_session():
 
 
 def initialize_session(sess):
-
     saver = tf.train.Saver()
 
     init_op = tf.group(tf.global_variables_initializer(),
@@ -50,13 +48,12 @@ def initialize_session(sess):
 
 def add_gradient_summary(list_gradvar):
     # Add summary for gradients
-    for g,v in list_gradvar:
+    for g, v in list_gradvar:
         if g is not None:
             tf.summary.histogram(v.name + "/gradient", g)
 
 
 def manage_queues(sess):
-
     coord = tf.train.Coordinator()
     tf.train.start_queue_runners(sess=sess, coord=coord)
 
@@ -66,7 +63,6 @@ def manage_queues(sess):
 
 
 def manage_summaries(sess):
-
     FLAGS = tf.app.flags.FLAGS
     writer = tf.summary.FileWriter(FLAGS.log_dir, sess.graph)
 
@@ -76,5 +72,4 @@ def manage_summaries(sess):
 
 
 def check_data(out, list_data):
-
     lu.print_check_data(out, list_data)

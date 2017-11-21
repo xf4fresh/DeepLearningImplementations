@@ -5,21 +5,18 @@ import tensorflow as tf
 
 
 def normalize_image(image):
-
     image = tf.cast(image, tf.float32) / 255.
     image = (image - 0.5) / 0.5
     return image
 
 
 def unnormalize_image(image, name=None):
-
     image = (image * 0.5 + 0.5) * 255.
     image = tf.cast(image, tf.uint8, name=name)
     return image
 
 
 def input_data(sess):
-
     FLAGS = tf.app.flags.FLAGS
 
     list_images = glob.glob(os.path.join(FLAGS.celebA_path, "*.jpg"))
@@ -27,7 +24,6 @@ def input_data(sess):
     # Read each JPEG file
 
     with tf.device('/cpu:0'):
-
         reader = tf.WholeFileReader()
         filename_queue = tf.train.string_input_producer(list_images)
         key, value = reader.read(filename_queue)
@@ -52,7 +48,7 @@ def input_data(sess):
 
         # Format image to correct ordering
         if FLAGS.data_format == "NCHW":
-            image = tf.transpose(image, (2,0,1))
+            image = tf.transpose(image, (2, 0, 1))
 
         # Using asynchronous queues
         img_batch = tf.train.batch([image],
@@ -65,6 +61,5 @@ def input_data(sess):
 
 
 def sample_batch(X, batch_size):
-
     idx = np.random.choice(X.shape[0], batch_size, replace=False)
     return X[idx]

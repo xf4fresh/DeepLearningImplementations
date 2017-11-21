@@ -31,7 +31,7 @@ def save_image(data, data_format, e):
             list_rows.append(Xr)
 
         Xr = np.concatenate(list_rows, axis=1)
-        Xr = Xr.transpose(1,2,0)
+        Xr = Xr.transpose(1, 2, 0)
 
     if Xr.shape[-1] == 1:
         plt.imshow(Xr[:, :, 0], cmap="gray")

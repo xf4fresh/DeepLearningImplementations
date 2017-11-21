@@ -4,21 +4,18 @@ import os
 
 
 def normalize_image(image):
-
     image = tf.cast(image, tf.float32) / 255.
     image = (image - 0.5) / 0.5
     return image
 
 
 def unnormalize_image(image):
-
     image = (image * 0.5 + 0.5) * 255.
     image = tf.cast(image, tf.uint8)
     return image
 
 
 def input_data(sess):
-
     FLAGS = tf.app.flags.FLAGS
 
     list_images = glob.glob(os.path.join(FLAGS.dataset, "*.jpg"))
@@ -48,7 +45,7 @@ def input_data(sess):
 
     # Format image to correct ordering
     if FLAGS.data_format == "NCHW":
-        image = tf.transpose(image, (2,0,1))
+        image = tf.transpose(image, (2, 0, 1))
 
     # Using asynchronous queues
     img_batch = tf.train.batch([image],

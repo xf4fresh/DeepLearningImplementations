@@ -1,11 +1,9 @@
-
 import tensorflow as tf
 
 FLAGS = tf.app.flags.FLAGS
 
 
 def define_flags():
-
     ############
     # Run mode
     ############

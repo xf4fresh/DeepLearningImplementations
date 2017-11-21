@@ -1,0 +1,7 @@
+logs
+models
+.idea
+
+*.gz
+*.png
+*.pyc

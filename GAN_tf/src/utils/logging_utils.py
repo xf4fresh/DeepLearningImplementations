@@ -5,7 +5,6 @@ from terminaltables import SingleTable
 
 
 def print_table(TABLE_DATA):
-
     table_instance = SingleTable(TABLE_DATA, "")
     table_instance.justify_columns[2] = 'right'
     print(table_instance.table)
@@ -13,23 +12,19 @@ def print_table(TABLE_DATA):
 
 
 def print_bright(s):
-
     init()
     print(Style.BRIGHT + s + Style.RESET_ALL)
 
 
 def print_green(info, value=""):
-
     print(Fore.GREEN + "[%s] " % info + Style.RESET_ALL + str(value))
 
 
 def print_red(info, value=""):
-
     print(Fore.RED + "[%s] " % info + Style.RESET_ALL + str(value))
 
 
 def print_session():
-
     FLAGS = tf.app.flags.FLAGS
 
     print_bright("\nSetting up TF session:")
@@ -50,14 +45,12 @@ def print_session():
 
 
 def print_initialize():
-
     print_bright("\nInitialization:")
     print_green("Created session saver")
     print_green("Ran init ops")
 
 
 def print_summaries():
-
     print_bright("\nSummaries:")
     list_summaries = tf.get_collection(tf.GraphKeys.SUMMARIES)
     for t in list_summaries:
@@ -65,14 +58,12 @@ def print_summaries():
 
 
 def print_queues():
-
     print_bright("\nQueues:")
     print_green("Created coordinator")
     print_green("Started queue runner")
 
 
 def print_check_data(out, list_data):
-
     print
     TABLE_DATA = (('Variable Name', 'Shape', "Min value", "Max value"),)
     for o, t in zip(out, list_data):

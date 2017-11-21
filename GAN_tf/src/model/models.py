@@ -1,11 +1,11 @@
 import sys
 import tensorflow as tf
+
 sys.path.append("../utils")
 import layers
 
 
 class Model(object):
-
     def __init__(self, name):
         self.name = name
 
@@ -92,7 +92,8 @@ class Generator(Model):
             #     x = layers.upsample2d_block(name, x, f, k, s, p, data_format=self.data_format, bn=bn, activation_fn=layers.lrelu)
 
             # Transposed conv blocks
-            for idx, (f, k, s, p) in enumerate(zip(self.list_filters, self.list_kernel_size, self.list_strides, self.list_padding)):
+            for idx, (f, k, s, p) in enumerate(
+                    zip(self.list_filters, self.list_kernel_size, self.list_strides, self.list_padding)):
                 img_size = self.start_dim * (2 ** (idx + 1))
                 if self.data_format == "NCHW":
                     output_shape = (self.batch_size, f, img_size, img_size)
@@ -131,7 +132,8 @@ class Discriminator(Model):
             if reuse:
                 scope.reuse_variables()
 
-            for idx, (f, k, s, p) in enumerate(zip(self.list_filters, self.list_kernel_size, self.list_strides, self.list_padding)):
+            for idx, (f, k, s, p) in enumerate(
+                    zip(self.list_filters, self.list_kernel_size, self.list_strides, self.list_padding)):
                 if idx == 0:
                     bn = False
                 else:

@@ -3,31 +3,26 @@ import tensorflow as tf
 
 
 def lrelu(x, leak=0.2):
-
     return tf.maximum(x, leak * x)
 
 
 def reshape(x, target_shape):
-
     return tf.reshape(x, target_shape)
 
 
 def linear(x, n_out, bias=True, name="linear"):
-
     with tf.variable_scope(name):
-
         n_in = x.shape[-1]
 
         # Initialize w
         w_init_std = np.sqrt(1.0 / n_out)
         w_init = tf.truncated_normal_initializer(0.0, w_init_std)
-        w = tf.get_variable('w', shape=[n_in,n_out], initializer=w_init)
+        w = tf.get_variable('w', shape=[n_in, n_out], initializer=w_init)
 
         # Dense mutliplication
         x = tf.matmul(x, w)
 
         if bias:
-
             # Initialize b
             b_init = tf.constant_initializer(0.0)
             b = tf.get_variable('b', shape=(n_out,), initializer=b_init)
@@ -39,21 +34,18 @@ def linear(x, n_out, bias=True, name="linear"):
 
 
 def phase_shift(x, upsampling_factor=2, name="PhaseShift"):
-
     return tf.depth_to_space(x, upsampling_factor, name=name)
 
 
 def mini_batch_disc(x, num_kernels=100, dim_per_kernel=5, name="mbd"):
-
     with tf.variable_scope(name):
-
         n_in = x.shape[-1]
         n_out = num_kernels * dim_per_kernel
 
         # Initialize w
         w_init_std = np.sqrt(1.0 / n_out)
         w_init = tf.truncated_normal_initializer(0.0, w_init_std)
-        w = tf.get_variable('w', shape=[n_in,n_out], initializer=w_init)
+        w = tf.get_variable('w', shape=[n_in, n_out], initializer=w_init)
 
         # Dense mutliplication
         x = tf.matmul(x, w)
@@ -94,7 +86,6 @@ def conv2d(x, n_in, n_out, k, s, p, bias=True, data_format="NCHW", name="conv2d"
 
 
 def deconv2d(x, output_shape, k, s, p, stddev=0.02, name="deconv2d", data_format="NCHW", bias=True):
-
     with tf.variable_scope(name):
 
         if data_format == "NHWC":
@@ -124,7 +115,8 @@ def deconv2d(x, output_shape, k, s, p, stddev=0.02, name="deconv2d", data_format
         return deconv
 
 
-def deconv2d_block(name, x, output_shape, k, s, p, stddev=0.02, data_format="NCHW", bias=True, bn=False, activation_fn=None):
+def deconv2d_block(name, x, output_shape, k, s, p, stddev=0.02, data_format="NCHW", bias=True, bn=False,
+                   activation_fn=None):
     with tf.variable_scope(name):
 
         x = deconv2d(x, output_shape, k, s, p, stddev=0.02, name="deconv2d", data_format=data_format, bias=bias)

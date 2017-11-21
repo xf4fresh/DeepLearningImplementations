@@ -25,7 +25,6 @@ def train_model():
 
     # Placeholder for data and Mnist iterator
     mnist = input_data.read_data_sets(FLAGS.raw_dir, one_hot=True)
-    # images = tf.constant(mnist.train.images)
     if FLAGS.data_format == "NHWC":
         X_real = tf.placeholder(tf.float32, shape=[FLAGS.batch_size, 28, 28, 1])
     else:
@@ -39,10 +38,6 @@ def train_model():
         else:
             imgs = imgs.reshape((npts, 1, 28, 28))
         imgs = (imgs - 0.5) / 0.5
-        # input_images = tf.constant(imgs)
-
-    #     image = tf.train.slice_input_producer([input_images], num_epochs=FLAGS.nb_epoch)
-    #     X_real = tf.train.batch(image, batch_size=FLAGS.batch_size, num_threads=8)
 
     #######################
     # Instantiate generator
@@ -75,7 +70,6 @@ def train_model():
     # Instantiate model outputs
     ###########################
 
-    # noise_input = tf.random_normal((FLAGS.batch_size, FLAGS.noise_dim,), stddev=0.1)
     noise_input = tf.random_uniform((FLAGS.batch_size, FLAGS.noise_dim,), minval=-1, maxval=1)
     X_fake = G(noise_input)
 
@@ -95,16 +89,6 @@ def train_model():
     D_loss_fake = objectives.binary_cross_entropy_with_logits(D_fake, tf.zeros_like(D_fake))
 
     D_loss = D_loss_real + D_loss_fake
-
-    # ######################################################################
-    # # Some parameters need to be updated (e.g. BN moving average/variance)
-    # ######################################################################
-    # from tensorflow.python.ops import control_flow_ops
-    # update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)
-    # with tf.control_dependencies(update_ops):
-    #     barrier = tf.no_op(name='update_barrier')
-    # D_loss = control_flow_ops.with_dependencies([barrier], D_loss)
-    # G_loss = control_flow_ops.with_dependencies([barrier], G_loss)
 
     ###########################
     # Compute gradient updates
@@ -151,7 +135,7 @@ def train_model():
     saver = tu.initialize_session(sess)
 
     # Start queues
-    coord = tu.manage_queues(sess)
+    tu.manage_queues(sess)
 
     # Summaries
     writer = tu.manage_summaries(sess)
@@ -159,13 +143,6 @@ def train_model():
     for e in tqdm(range(FLAGS.nb_epoch), desc="\nTraining progress"):
         t = tqdm(range(FLAGS.nb_batch_per_epoch), desc="Epoch %i" % e, mininterval=0.5)
         for batch_counter in t:
-            # X_batch, _ = mnist.train.next_batch(FLAGS.batch_size)
-            # if FLAGS.data_format == "NHWC":
-            #     X_batch = np.reshape(X_batch, [-1, 28, 28, 1])
-            # else:
-            #     X_batch = np.reshape(X_batch, [-1, 1, 28, 28])
-            # X_batch = (X_batch - 0.5) / 0.5
-
             X_batch = du.sample_batch(imgs, FLAGS.batch_size)
             output = sess.run(train_ops + loss_ops + [summary_op], feed_dict={X_real: X_batch})
 
@@ -173,16 +150,9 @@ def train_model():
                 writer.add_summary(output[-1], e * FLAGS.nb_batch_per_epoch + batch_counter)
             lossG, lossDreal, lossDfake = [output[2], output[4], output[5]]
 
-            t.set_description('Epoch %i: - G loss: %.2f D loss real: %.2f Dloss fake: %.2f' %
-                              (e, lossG, lossDreal, lossDfake))
-
-            # variables = [v for v in tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES)]
-            # bmean = [v for v in variables if v.name == "generator/conv2D_1_1/BatchNorm/moving_mean:0"]
-            # print sess.run(bmean)
-            # raw_input()
+            t.set_description('Epoch %i: - G loss: %.2f D loss real: %.2f Dloss fake: %.2f' % (e, lossG, lossDreal, lossDfake))
 
         # Plot some generated images
-        # output = sess.run([X_G_output, X_real_output])
         output = sess.run([X_G_output, X_real_output], feed_dict={X_real: X_batch})
         vu.save_image(output, FLAGS.data_format, e)
 
